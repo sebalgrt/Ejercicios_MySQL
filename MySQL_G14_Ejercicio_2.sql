@@ -57,4 +57,25 @@ mayor o igual a $180. Ordene el resultado en primer lugar por el precio (en orde
 (en orden ascendente)*/
  select producto.nombre, producto.precio, fabricante.nombre from producto inner join fabricante
  on producto.codigo_fabricante = fabricante.codigo where producto.precio >= 180 order by producto.precio desc, producto.nombre asc;
- 
+ /*Consultas Multitabla 
+Resuelva todas las consultas utilizando las cláusulas LEFT JOIN y RIGHT JOIN.
+1. Devuelve un listado de todos los fabricantes que existen en la base de datos, junto con los productos que tiene cada uno de ellos. 
+El listado deberá mostrar también aquellos fabricantes que no tienen productos asociados*/
+select fabricante.nombre, producto.nombre from fabricante left join producto on fabricante.codigo = producto.codigo_fabricante;
+/*2. Devuelve un listado donde sólo aparezcan aquellos fabricantes que no tienen ningún producto asociado*/
+ select fabricante.nombre, producto.nombre from producto right join fabricante on fabricante.codigo = producto.codigo_fabricante 
+ where producto.nombre is null;
+ /*Subconsultas (En la cláusula WHERE)
+Con operadores básicos de comparación
+1. Devuelve todos los productos del fabricante Lenovo. (Sin utilizar INNER JOIN)*/
+select producto.nombre from producto where producto.codigo_fabricante = (select fabricante.codigo from fabricante 
+where fabricante.nombre = 'Lenovo');
+/*2. Devuelve todos los datos de los productos que tienen el mismo precio que el producto más caro del fabricante Lenovo. 
+(Sin utilizar INNER JOIN).*/
+INSERT INTO producto VALUES(50, 'LCDTM', 559, 3); /*Agregué un producto para comprobar*/
+select * from producto where precio = (select max(precio) from producto where codigo_fabricante = (select codigo from fabricante where nombre = 'Lenovo'));
+/*3. Lista el nombre del producto más caro del fabricante Lenovo.*/
+select nombre, precio from producto where precio = (select max(precio) from producto 
+where codigo_fabricante = (select codigo from fabricante where nombre = 'Lenovo'));
+/*4. Lista todos los productos del fabricante Asus que tienen un precio superior al precio medio de todos sus productos*/
+select nombre, codigo_fabricante, precio from producto where codigo_fabricante = (select codigo from fabricante where nombre = 'Asus' and avg(precio)); 
